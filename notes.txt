@@ -1,0 +1,155 @@
+blue
+81276110 (CARRIED ACTOR X)
+81276118 (CARRIED ACTOR Z)
+
+purple
+812761BC (CARRIED ACTOR X)
+812761C4 (CARRIED ACTOR Z)
+
+actors on heap are AC apart ??
+wow tiny
+
+actor heap x ?
+81276064 (actor x? on heap)
+
+writes init actor coords ?
+
+zz_80078da0_
+80078da0: cmplwi	r4, 0
+80078da4: stw	r4, 0x0034 (r3)
+80078da8: beq-	 ->0x80078DD0
+80078dac: lfs	f0, 0 (r4)
+80078db0: addi	r0, r3, 56
+80078db4: stfs	f0, 0x0038 (r3)
+80078db8: lfs	f0, 0x0004 (r4)
+80078dbc: stfs	f0, 0x003C (r3)
+80078dc0: lfs	f0, 0x0008 (r4)
+80078dc4: stfs	f0, 0x0040 (r3)
+80078dc8: stw	r0, 0x0014 (r3)
+80078dcc: blr	
+80078dd0: li	r0, 0
+80078dd4: stw	r0, 0x0014 (r3)
+80078dd8: blr	
+
+sign in 2-2
+actor spawns at 812e8ccc ?
+
+
+actor or something at 812af9ac ??
+pulling info from 812e8ccc which is what link interacts w ??
+
+812af9ac + 0x14 is a pointer, if not null then
+
+pointer + 0x4 -> f1
+pointer + 0x8 -> f0
+store f0 -> pointer + 0x4
+
+812e8cc0 is the actor start ???
+node header ??
+ 
+ -----------
+
+2-2 co op context working backwards ...
+
+812ac68c + 0x1008 : some sort of size or offset? (812ad694)
+812ac68c + 0x100C : actor pointer list (812ad698)
+
+actor pointer list + 0x10 (5th entry) : our sign @ 812af900
+
+POSSIBLE POINTERS TO BigStruct (812ac68c)
+80549614
+805496E4
+81292FF8
+
+node slot 812af900
+
+node size 0xac
+
+node + 0x00 pointer (812af97c) internal pointer?
+node + 0x14 pointer (812af938) internal pointer to pos xyz
+node + 0x18 pointer (8048f61c) no idea
+node + 0x1c pointer (808cac60) no idea, looks like camera data nearby? static across nodes ?
+node + 0x20 pointer (812af918) internal pointer?
+node + 0x24 pointer (808cacbc) near 0x1c pointer ? static across nodes ?
+node + 0x28 pointer (812af874) prev node ? but 0x20 in
+node + 0x2c pointer (812af9cc) next node ? but 0x20 in
+node + 0x30 halfword? 1 if in use, otherwise 0
+node + 0x34 pointer (812e88cc) seems to point to MoreInfoStuff
+node + 0x38 float x
+node + 0x3C float y
+node + 0x40 float z
+node + 0x64 pointer (812af8f0) end of last node?
+node + 0x68 pointer (812af8f0) internal pointer?
+
+mis header 812e7cc0 ?
+pointed at from:
+	812e7bcc
+	812e7c18
+seems static !! ? (once in game)
+
+MoreInfoStuff Header 812e88c0
+MoreInfoStuff 812e88cc
+mis size 0x400
+
+mis + 0x030 byte, vel x related?
+mis + 0x031 byte, vel x related?
+mis + 0x034 byte, vel z related?
+mis + 0x035 byte, vel z related?
+mis + 0x110 byte, slot occupied
+mis + 0x194 actor identifier (ex: "FORM", "KNBN")
+mis + 0x5a0 xzy mirror of green
+mis + 0x5ac xzy mirror of red
+mis + 0x5b8 xzy mirror of blue
+mis + 0x5c4 xzy mirror of purple
+
+__SpawnActor (801feff4)
+r1: stack related ?
+r2: idk
+r3: bigstruct
+r4: spawn params?
+r7: attach actor ? 0 is none, 1-4 is links ... ???
+r9: which link 0-3
+
+starts at 0x8 of big struct (812ac68c)
+goes over pointers until null pointer...
+then uses that to fill actor slot !
+
+goes through huge switch for which actor to load
+finds, then calls zz_8008a548_ to prepare memory?
+
+InitActorBORD: r3 has memory where loaded 812e88c0
+static address of 804a37e8 put into r0 ??? huh
+this address stuck into 812e88c0 (mis header 1st word)
+
+moon pearl as indicator ???
+limt !! :3 4C494D54
+
+params ...
+r3:  bigstruct
+r4:  4c494d54
+r5:  00000000
+r6:  ???????? pointer to init coords?
+r7:  00000000
+r8:  ffffffff
+r9:  ffffffff (which link? 0-3)
+
+where to pull coords from ?
+grab  ... 8054a6c4 ... huh
+sword ... 812a8ecc ... ?
+
+more __SpawnActor...
+
+r27 @ 80204f78 (passed in from r6 into __SpawnActor)
+
+-> __InitCoords @ 80205274
+contains init xz coords ? loaded into f1 0 & 1
+0x8 into coords pointer loaded into f0
+
+init xz written to mis header + 0x8
+
+
+------
+
+better place to get pointer to BigStruct:
+pointer at 8053154C
+pointer + 0x18

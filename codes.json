@@ -1,0 +1,29 @@
+{
+    "settings": {
+        "areIncludesRelativeFromFile": true
+    },
+    "outputFiles": [
+        {
+            "file": "CodesList.txt"
+        }
+    ],
+    "codes": [
+        {
+            "name": "FSA Practice Codes",
+            "authors": [
+                "Savestate"
+            ],
+            "description": [
+                "FSA Practice Codes"
+            ],
+            "build": [
+                {
+                    "type": "injectFolder",
+                    "sourceFolder": "assembly",
+                    "isRecursive": true,
+                    "annotation": "FSA Practice Codes [Savestate]"
+                }
+            ]
+        }
+    ]
+}
