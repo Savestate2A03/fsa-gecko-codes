@@ -108,8 +108,8 @@ mulli r23, r21, 0x0004
 add r23, r23, r22
 lwz r29, 0(r23)
 
-li r3, r21
-addi r4, r29, 0
+addi r3, r21, 0
+addi r4, r29, CONST_ActorCoords
 bl FN_WritePlayerCoords
 
 addi r21, r21, 1

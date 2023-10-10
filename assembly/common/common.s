@@ -113,6 +113,7 @@ mtlr r0
 .set CONST_ActorX, 0xC
 .set CONST_ActorZ, 0x10
 .set CONST_ActorY, 0x14
+.set CONST_ActorCoords, 0xC
 .set CONST_ActorTKRM, 0x544B524D
 
 # Buttons
