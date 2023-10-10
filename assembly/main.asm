@@ -38,31 +38,66 @@ blr
 FN_PushVisualizer:
 backup
 
-### check if B is held
-li r3, BTN_B
-li r4, ENUM_Red
-li r5, CONST_Strict
-bl FN_ButtonPressed
-cmplwi r3, 0
-beq FN_PushVisualizerExit
+### check each pointer and see if push visualizer is allocated
+li r20, CONST_LinkCount
+li r21, 0
+bl FNDATA_PushVisualizer_ActorPointers
+mflr r22
 
-### get link coordinates and set dummy float data
-bl FNDATA_PushVisualizer
+LBL_PushVisualizer_PointerLoop:
+
+# get pointer
+mulli r23, r21, 0x0004
+add r23, r23, r22
+lwz r29, 0(r23)
+
+# null check
+cmpwi r29, 0
+beq LBL_PushVisualizer_Allocate
+
+# check if X is now deallocated
+lbz r24, CONST_ActorAllocatedByte(r29)
+cmpwi r24, 0
+beq LBL_PushVisualizer_Allocate
+
+# check if TKRM
+lwz r24, CONST_ActorType(r29)
+load r25, 0x544B524D
+cmpw r24, r25
+bne LBL_PushVisualizer_Allocate
+
+LBL_PushVisualizer_PointerLoopNext:
+addi r21, r21, 1
+cmpwi r21, 4
+beq LBL_PushVisualizer_UpdateCoordinates
+b LBL_PushVisualizer_PointerLoop
+
+LBL_PushVisualizer_Allocate:
+
+### get link coordinates and set float data
+bl FNDATA_PushVisualizer_Floats
 mflr r4
-li r3, ENUM_Green
+addi r3, r21, 0x0000
 bl FN_WritePlayerCoords
 
 ### Set up function call to spawn actor
-bl FN_GetActorHeap  # r3 - Pointer to Actor Heap
-load r4, 0x544B524D # r4 - TKRM (x marks the spot)
-li r5, 0x0000       # r5 - ?
-bl FNDATA_PushVisualizer
-mflr r6             # r6 - Float Data
-li r7, 0x0000       # r7 - Actor Parameters
-load r8, 0xFFFFFFFF # r8 - ?
-load r9, 0xFFFFFFFF # r9 - ? (Attach Link ?)
+bl FN_GetActorHeap       # r3 - Pointer to Actor Heap
+load r4, 0x544B524D      # r4 - TKRM (x marks the spot)
+li r5, 0x0000            # r5 - ?
+bl FNDATA_PushVisualizer_Floats
+mflr r6                  # r6 - Float Data
+li r7, 0x0000            # r7 - Actor Parameters
+load r8, 0xFFFFFFFF      # r8 - ?
+load r9, 0xFFFFFFFF      # r9 - ? (Attach Link ?)
 
 branchl r20, FN_SpawnActor
+
+addi r4, r4, -0x60
+stw r4, 0(r23)
+
+b LBL_PushVisualizer_PointerLoopNext
+
+LBL_PushVisualizer_UpdateCoordinates:
 
 FN_PushVisualizerExit:
 
@@ -72,28 +107,24 @@ blr
 # FN_PushVisualizer
 ################################################################################
 
-FNDATA_PushVisualizer:
+FNDATA_PushVisualizer_Floats:
 blrl 
 
-# Green
 .float 1.000 # x
 .float 2.000 # z
 .float 3.000 # y
 
-# Red
-.float 1.000 # x
-.float 2.000 # z
-.float 3.000 # y
+FNDATA_PushVisualizer_ActorPointers:
+blrl 
 
-# Blue
-.float 1.000 # x
-.float 2.000 # z
-.float 3.000 # y
-
-# Purple
-.float 1.000 # x
-.float 2.000 # z
-.float 3.000 # y
+.word 0x00000000 # Green
+.word 0x00000000 # Red
+.word 0x00000000 # Blue
+.word 0x00000000 # Purple
+.word 0x00000000 # Green
+.word 0x00000000 # Red
+.word 0x00000000 # Blue
+.word 0x00000000 # Purple
 
 # FNDATA_PushVisualizer
 ################################################################################

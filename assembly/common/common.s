@@ -97,12 +97,23 @@ mtlr r0
 .set ENUM_Blue,   2
 .set ENUM_Purple, 3
 
+.set CONST_LinkCount, 4
+
 # Strict and Nonstrict
 .set CONST_Nonstrict, 0
 .set CONST_Strict,    1
 
 # Offsets
 .set CONST_HeapOffset, 0x63B4
+.set CONST_PushX, 0x02D0
+.set CONST_PushZ, 0x02D4
+
+.set CONST_ActorAllocatedByte, 0x11C
+.set CONST_ActorType, 0x1A0
+.set CONST_ActorX, 0xC
+.set CONST_ActorZ, 0x10
+.set CONST_ActorY, 0x14
+.set CONST_ActorTKRM, 0x544B524D
 
 # Buttons
 .set BTN_Left,   0x0001

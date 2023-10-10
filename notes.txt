@@ -155,3 +155,15 @@ pointer at 8053154C
 pointer + 0x18
 
 find function that returns the address of it ???
+
+
+__
+
+spawn actor return - 0x60 ?
+sign example 812e8920
+actual actor: 812e88c0
+	+ 0x00c x
+	+ 0x010 z
+	+ 0x014 y
+	+ 0x13c allocated byte 812e8920
+	+ 0x1a0 type (4 letter)
