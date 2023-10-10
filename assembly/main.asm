@@ -108,9 +108,32 @@ mulli r23, r21, 0x0004
 add r23, r23, r22
 lwz r29, 0(r23)
 
+### X logic start
+# r21 - current link
+# r29 - pointer to X data
+
+# UNCOMMENT LATER
+# addi r3, r21, 0
+# bl FN_IsPlayerBeingPushed
+# cmpwi r3, 0
+# beq LBL_PushVisualizer_UpdateLoopNotPushed
+
 addi r3, r21, 0
-addi r4, r29, CONST_ActorCoords
-bl FN_WritePlayerCoords
+bl FN_GetLink
+
+addi r24, r3, CONST_LinkX
+addi r25, r3, CONST_LinkPushX
+addi r26, r29, CONST_ActorCoords
+
+addi r3, r24, 0
+addi r4, r25, 0
+addi r5, r26, 0
+
+bl FN_AddXZY
+
+### X logic end
+
+LBL_PushVisualizer_UpdateLoopNotPushed:
 
 addi r21, r21, 1
 cmpwi r21, CONST_LinkCount
@@ -291,4 +314,78 @@ addi r3, r3, CONST_HeapOffset
 blr
 
 # FN_GetActorHeap
+################################################################################
+
+
+
+################################################################################
+# Function: FN_IsPlayerBeingPushed
+#-------------------------------------------------------------------------------
+# Inputs:
+# r3 - Link index, valid values 0-3
+#-------------------------------------------------------------------------------
+# Outputs:
+# r3 - Boolean true/false
+#-------------------------------------------------------------------------------
+# Description:
+# Checks if a player's X or Z push values are non-zero.
+#-------------------------------------------------------------------------------
+
+FN_IsPlayerBeingPushed:
+
+bl FN_GetLink
+
+lwz r4, CONST_LinkPushX(r3)
+cmpwi r4, 0
+bne LBL_IsPlayerBeingPushedTrue
+
+lwz r4, CONST_LinkPushZ(r3)
+cmpwi r4, 0
+bne LBL_IsPlayerBeingPushedTrue
+
+li r3, 0
+blr
+
+LBL_IsPlayerBeingPushedTrue:
+
+li r3, 1
+blr
+
+# FN_IsPlayerBeingPushed
+################################################################################
+
+
+
+################################################################################
+# Function: FN_AddXZY
+#-------------------------------------------------------------------------------
+# Inputs:
+# r3 - pointer to 3 floats of data
+# r4 - pointer to 3 floats of data
+# r5 - pointer to destination
+#-------------------------------------------------------------------------------
+# Description:
+# Adds X+X, Z+Z, and Y+Y and stores them consecutively at r5
+#-------------------------------------------------------------------------------
+
+FN_AddXZY:
+
+lfs f0, 0x0000(r3)
+lfs f1, 0x0000(r4)
+fadds f2, f0, f1
+stfs f2, 0x0000(r5)
+
+lfs f0, 0x0004(r3)
+lfs f1, 0x0004(r4)
+fadds f2, f0, f1
+stfs f2, 0x0004(r5)
+
+lfs f0, 0x0008(r3)
+lfs f1, 0x0008(r4)
+fadds f2, f0, f1
+stfs f2, 0x0008(r5)
+
+blr
+
+# FN_AddXZY
 ################################################################################

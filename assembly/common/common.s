@@ -105,8 +105,12 @@ mtlr r0
 
 # Offsets
 .set CONST_HeapOffset, 0x63B4
-.set CONST_PushX, 0x02D0
-.set CONST_PushZ, 0x02D4
+
+.set CONST_LinkX, 0x8
+.set CONST_LinkZ, 0xC
+.set CONST_LinkY, 0x10
+.set CONST_LinkPushX, 0x02D0
+.set CONST_LinkPushZ, 0x02D4
 
 .set CONST_ActorAllocatedByte, 0x11C
 .set CONST_ActorType, 0x1A0
