@@ -39,7 +39,6 @@ FN_PushVisualizer:
 backup
 
 ### check each pointer and see if push visualizer is allocated
-li r20, CONST_LinkCount
 li r21, 0
 bl FNDATA_PushVisualizer_ActorPointers
 mflr r22
@@ -68,7 +67,7 @@ bne LBL_PushVisualizer_Allocate
 
 LBL_PushVisualizer_PointerLoopNext:
 addi r21, r21, 1
-cmpwi r21, 4
+cmpwi r21, CONST_LinkCount
 beq LBL_PushVisualizer_UpdateCoordinates
 b LBL_PushVisualizer_PointerLoop
 
@@ -98,6 +97,24 @@ stw r4, 0(r23)
 b LBL_PushVisualizer_PointerLoopNext
 
 LBL_PushVisualizer_UpdateCoordinates:
+
+### update each X
+li r21, 0
+
+LBL_PushVisualizer_UpdateLoop:
+
+# get pointer
+mulli r23, r21, 0x0004
+add r23, r23, r22
+lwz r29, 0(r23)
+
+li r3, r21
+addi r4, r29, 0
+bl FN_WritePlayerCoords
+
+addi r21, r21, 1
+cmpwi r21, CONST_LinkCount
+bne LBL_PushVisualizer_UpdateLoop
 
 FN_PushVisualizerExit:
 
